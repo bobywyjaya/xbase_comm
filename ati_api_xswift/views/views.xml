@@ -1,0 +1,119 @@
+<odoo>
+  <data>
+        <record model="ir.ui.view" id="ati_api_xswift_product_category_inherit">
+            <field name="name">ATI API XSwift Product Category Form Inherit</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_form_view"/>
+            <field name="arch" type="xml">
+                <field name="parent_id" position="after">
+                    <field name="x_connect_to_xswift"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ati_api_xswift_request_request_inherit">
+            <field name="name">ATI API XSwift Form Inherit</field>
+            <field name="model">request.request</field>
+            <field name="inherit_id" ref="generic_request.view_request_request_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header/field[@name='stage_id']" position="before">
+                    <button name="post_data" 
+                            string="Post Data" 
+                            class="btn-primary" 
+                            type="object"
+                            invisible="1"/>
+                </xpath>
+                <field name="name" position="after">
+                    <field name="x_hours_gmt" invisible="1"/>
+                    <field name="x_date_closed_result" invisible="1"/>
+                    <field name="x_is_xswift" invisible="1"/>
+                    <field name="x_current_stage" invisible="1"/>
+                </field>
+                <field name="response_text" position="after">
+                    <div class="request-separator">
+                        <span class="request-separator-text">On-Hold Note</span>
+                    </div>
+                    <field name="x_onhold_note" colspan="4"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ati_api_xswift_sale_order_inherit">
+            <field name="name">ATI API XSwift Sale Order Form Inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="before">
+                    <field name="x_is_post" invisible="1"/>
+                    <field name="x_is_xswift" invisible="1"/>
+                    <field name="x_xswift_ticket" attrs="{'invisible': [('x_is_xswift', '!=', True)]}"/>
+                    <field name="x_xswift_date" invisible="1"/>
+                    <field name="x_total_period" invisible="1"/>
+                </field>
+                <xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="after">
+                        <field name="x_xswift_ticket" invisible="1"/>
+                        <field name="x_xswift_date" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_log_api_form" model="ir.ui.view">
+            <field name="name">Log API Form</field>
+            <field name="model">log.api</field>
+            <field name="arch" type="xml">
+                <form string="Log API XSwift">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="sequence" invisible="1"/>
+                                <field name="xswift_response_id"/>
+                                <field name="xswift_ticket_id"/>
+                                <field name="name"/>
+                                <field name="xswift_request"/>
+                                <field name="xswift_response"/>
+                                <field name="xswift_message"/>
+                            </group>
+                            <group>
+                                <field name="xswift_stage_id"/>
+                                <field name="xswift_stage_date"/>
+                                <field name="xswift_status"/>
+                                <field name="xswift_remark"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_log_api_tree" model="ir.ui.view">
+            <field name="name">log.api.tree</field>
+            <field name="model">log.api</field>
+            <field name="arch" type="xml">
+                <tree string="Log API" edit="false" create="false">
+                    <field name="sequence" invisible="1"/>
+                    <field name="name"/>
+                    <field name="xswift_response_id"/>
+                    <field name="xswift_ticket_id"/>
+                    <field name="xswift_stage_id"/>
+                    <field name="xswift_stage_date"/>
+                    <field name="xswift_status"/>
+                    <field name="xswift_remark"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_log_api" model="ir.actions.act_window">
+            <field name="name">Log API</field>
+            <field name="res_model">log.api</field>
+            <!-- <field name="context">{'group_by':'name'}</field> -->
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_log_api_tree"/>
+        </record>
+
+        <menuitem id="menu_log_api_xswift"
+                    name="Log API XSwift"
+                    parent="generic_request.menu_configuration"
+                    sequence="121"
+                    action="action_log_api"/>
+  </data>
+</odoo>
